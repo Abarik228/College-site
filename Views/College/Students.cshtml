@@ -1,0 +1,19 @@
+@model IReadOnlyList<CollegePortal.Domain.Student>
+@{
+    ViewData["Title"] = "Студенты";
+}
+<header class="page-heading"><div><p class="eyebrow">Контингент</p><h1>Студенты</h1><p class="subtitle">Список обучающихся и учебных групп</p></div><span class="tag">@Model.Count студентов</span></header>
+@if (TempData["Notice"] is not null){<div class="alert alert-success">@TempData["Notice"]</div>}
+@if (TempData["Error"] is not null){<div class="alert alert-error">@TempData["Error"]</div>}
+@if (User.IsInRole("Admin"))
+{
+    <section class="panel"><div class="panel-heading"><h2>Добавить студента</h2></div><form asp-action="AddStudent" method="post" class="form-grid">
+        <div class="field"><label for="name">Имя</label><input id="name" name="name" required /></div><div class="field"><label for="surname">Фамилия</label><input id="surname" name="surname" required /></div><div class="field"><label for="age">Возраст</label><input id="age" name="age" type="number" min="15" max="70" required /></div><div class="field"><label for="groupName">Группа</label><select id="groupName" name="groupName" required><option value="">Выберите группу</option>@foreach(var group in ViewBag.Groups){<option value="@group.Name">@group.Name</option>}</select></div><div class="form-actions"><button class="button" type="submit">Добавить</button></div>
+    </form></section>
+}
+<section class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>ID</th><th>Фамилия и имя</th><th>Возраст</th><th>Группа</th></tr></thead><tbody>
+@foreach (var student in Model.OrderBy(s => s.Surname))
+{
+    <tr><td>#@student.StudentId</td><td><strong>@student.Surname @student.Name</strong></td><td>@student.Age</td><td><span class="tag">@student.Group</span></td></tr>
+}
+</tbody></table></div></section>

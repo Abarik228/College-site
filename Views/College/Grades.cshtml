@@ -1,0 +1,23 @@
+@model CollegePortal.Models.GradePageViewModel
+@{
+    ViewData["Title"] = "Электронный журнал";
+}
+<header class="page-heading"><div><p class="eyebrow">Успеваемость</p><h1>Электронный журнал</h1><p class="subtitle">Оценки по дисциплинам и студентам</p></div><a class="button button-quiet" asp-action="Report" asp-route-type="students">Отчёт по студентам</a></header>
+@if (TempData["Notice"] is not null){<div class="alert alert-success">@TempData["Notice"]</div>}
+@if (TempData["Error"] is not null){<div class="alert alert-error">@TempData["Error"]</div>}
+@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+{
+    <section class="panel"><div class="panel-heading"><h2>Поставить оценку</h2><span class="subtle">Допустимые значения: 2–5</span></div><form asp-action="AddGrade" method="post" class="form-grid">
+        <div class="field"><label for="studentId">Студент</label><select id="studentId" name="studentId" required>@foreach(var student in Model.Students){<option value="@student.StudentId">@student.Surname @student.Name</option>}</select></div>
+        <div class="field"><label for="subject">Предмет</label><select id="subject" name="subject" required>@foreach(var subject in Model.Subjects){<option value="@subject.Title">@subject.Title</option>}</select></div>
+        <div class="field"><label for="value">Оценка</label><select id="value" name="value"><option>5</option><option>4</option><option>3</option><option>2</option></select></div>
+        <div class="form-actions"><button class="button" type="submit">Сохранить оценку</button></div>
+    </form></section>
+}
+<section class="panel"><div class="panel-heading"><h2>Все оценки</h2><span class="subtle">@Model.Grades.Count записей</span></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Дата</th><th>Студент</th><th>Предмет</th><th>Оценка</th><th>Средний балл</th>@if(User.IsInRole("Admin") || User.IsInRole("Teacher")){<th></th>}</tr></thead><tbody>
+@foreach (var grade in Model.Grades.OrderByDescending(g => g.Date))
+{
+    <tr><td>@grade.Date.ToString("dd.MM.yyyy")</td><td><strong>@grade.StudentName</strong></td><td>@grade.Subject</td><td><span class="tag @(grade.Value <= 3 ? "tag-coral" : "")">@grade.Value</span></td><td>@Model.Grades.Where(g => g.StudentId == grade.StudentId).Average(g => g.Value).ToString("0.00")</td>
+    @if(User.IsInRole("Admin") || User.IsInRole("Teacher")){<td><form class="inline-form" asp-action="RemoveGrade" method="post"><input type="hidden" name="id" value="@grade.Id"/><button class="button button-danger button-small" type="submit">Удалить</button></form></td>}</tr>
+}
+</tbody></table></div></section>

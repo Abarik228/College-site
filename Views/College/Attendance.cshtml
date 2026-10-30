@@ -1,0 +1,25 @@
+@model CollegePortal.Models.AttendancePageViewModel
+@{
+    ViewData["Title"] = "Посещаемость";
+}
+<header class="page-heading"><div><p class="eyebrow">Контроль занятий</p><h1>Посещаемость</h1><p class="subtitle">Журнал присутствия по учебным дисциплинам</p></div><a class="button button-quiet" asp-action="Report" asp-route-type="attendance">Скачать отчёт</a></header>
+@if (TempData["Notice"] is not null){<div class="alert alert-success">@TempData["Notice"]</div>}
+@if (TempData["Error"] is not null){<div class="alert alert-error">@TempData["Error"]</div>}
+<div class="stats-grid"><div class="stat"><span class="stat-label">Посещаемость</span><strong class="stat-value">@Model.Statistics.Percent%</strong></div><div class="stat"><span class="stat-label">Всего отметок</span><strong class="stat-value">@Model.Statistics.Total</strong></div><div class="stat"><span class="stat-label">Присутствовали</span><strong class="stat-value">@Model.Statistics.Present</strong></div><div class="stat"><span class="stat-label">Отсутствовали</span><strong class="stat-value">@Model.Statistics.Absent</strong></div></div>
+@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+{
+    <section class="panel"><div class="panel-heading"><h2>Отметить занятие</h2></div><form asp-action="AddAttendance" method="post" class="form-grid">
+        <div class="field"><label for="studentId">Студент</label><select id="studentId" name="studentId" required>@foreach(var student in Model.Students){<option value="@student.StudentId">@student.Surname @student.Name</option>}</select></div>
+        <div class="field"><label for="subject">Предмет</label><select id="subject" name="subject" required>@foreach(var subject in Model.Subjects){<option value="@subject.Title">@subject.Title</option>}</select></div>
+        <div class="field"><label for="date">Дата</label><input id="date" name="date" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required /></div>
+        <div class="field"><label for="present">Статус</label><select id="present" name="present"><option value="true">Присутствовал</option><option value="false">Отсутствовал</option></select></div>
+        <div class="form-actions"><button class="button" type="submit">Сохранить отметку</button></div>
+    </form></section>
+}
+<section class="panel"><div class="panel-heading"><h2>История отметок</h2><a class="subtle" asp-action="Report" asp-route-type="attendance">Текстовый отчёт →</a></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Дата</th><th>Студент</th><th>Предмет</th><th>Статус</th>@if(User.IsInRole("Admin") || User.IsInRole("Teacher")){<th>Изменить</th>}</tr></thead><tbody>
+@foreach (var record in Model.Records.OrderByDescending(r => r.Date))
+{
+    <tr><td>@record.Date.ToString("dd.MM.yyyy")</td><td><strong>@record.StudentName</strong></td><td>@record.Subject</td><td class="@(record.Present ? "attendance-present" : "attendance-absent")">@(record.Present ? "Присутствовал" : "Отсутствовал")</td>
+    @if(User.IsInRole("Admin") || User.IsInRole("Teacher")){<td><form class="inline-form" asp-action="UpdateAttendance" method="post"><input type="hidden" name="id" value="@record.Id"/><input type="hidden" name="present" value="@(!record.Present)"/><button class="button button-quiet button-small" type="submit">Изменить</button></form></td>}</tr>
+}
+</tbody></table></div></section>

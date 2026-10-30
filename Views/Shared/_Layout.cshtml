@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CollegePortal</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <header class="topbar">
+            <a class="brand" asp-controller="College" asp-action="Index"><span class="brand-mark">К</span><span>Колледж<span class="brand-subtitle">учебный портал</span></span></a>
+            <nav class="main-nav" aria-label="Основная навигация">
+                <a asp-controller="College" asp-action="Index">Обзор</a>
+                <a asp-controller="College" asp-action="Students">Студенты</a>
+                <a asp-controller="College" asp-action="Teachers">Преподаватели</a>
+                <a asp-controller="College" asp-action="Groups">Группы</a>
+                <a asp-controller="College" asp-action="Grades">Оценки</a>
+                <a asp-controller="College" asp-action="Attendance">Посещаемость</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="College" asp-action="Admin">Администрирование</a>
+                }
+            </nav>
+            <div class="account-menu"><span>@User.FindFirst("DisplayName")?.Value</span><form asp-controller="Access" asp-action="Logout" method="post"><button class="button button-quiet" type="submit">Выйти</button></form></div>
+        </header>
+    }
+    <main class="page-shell" role="main">
+            @RenderBody()
+    </main>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

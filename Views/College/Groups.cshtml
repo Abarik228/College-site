@@ -1,0 +1,17 @@
+@model IReadOnlyList<CollegePortal.Domain.Group>
+@{
+    ViewData["Title"] = "Группы";
+}
+<header class="page-heading"><div><p class="eyebrow">Учебные подразделения</p><h1>Группы</h1><p class="subtitle">Состав и курс обучения</p></div><span class="tag">@Model.Count групп</span></header>
+@if (TempData["Notice"] is not null){<div class="alert alert-success">@TempData["Notice"]</div>}
+@if (TempData["Error"] is not null){<div class="alert alert-error">@TempData["Error"]</div>}
+@if (User.IsInRole("Admin"))
+{
+    <section class="panel"><div class="panel-heading"><h2>Создать группу</h2></div><form asp-action="AddGroup" method="post" class="form-grid"><div class="field"><label for="name">Название</label><input id="name" name="name" required /></div><div class="field"><label for="course">Курс</label><select id="course" name="course"><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="form-actions"><button class="button" type="submit">Создать группу</button></div></form></section>
+}
+<section class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Группа</th><th>Курс</th><th>Студентов</th><th>Состав</th></tr></thead><tbody>
+@foreach (var group in Model.OrderBy(g => g.Name))
+{
+    <tr><td><strong>@group.Name</strong></td><td>@group.Course курс</td><td>@group.Students.Count</td><td>@string.Join(", ", group.Students.Select(s => $"{s.Name} {s.Surname}"))</td></tr>
+}
+</tbody></table></div></section>

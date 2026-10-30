@@ -1,0 +1,43 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Вход";
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Вход · Колледж</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <main class="login-page">
+        <section class="login-brand">
+            <a class="brand" asp-controller="Access" asp-action="Login"><span class="brand-mark">К</span><span>Колледж<span class="brand-subtitle">учебный портал</span></span></a>
+            <div>
+                <p class="eyebrow" style="color:#d8ed87">Городской политехнический колледж</p>
+                <h1 class="login-title">Знания.<br /><span>Практика.</span><br />Будущее.</h1>
+                <p class="login-note">Единое пространство для студентов, преподавателей и администрации.</p>
+            </div>
+            <p class="subtle" style="color:#c6ddd4">Учебный год 2026–2027</p>
+        </section>
+        <section class="login-form-wrap">
+            <form class="login-form" asp-controller="Access" asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                <p class="eyebrow">Личный кабинет</p>
+                <h1>Войти в портал</h1>
+                <p class="subtitle">Введите данные своей учётной записи.</p>
+                @if (ViewBag.Error is not null)
+                {
+                    <div class="alert alert-error" style="margin-top:20px">@ViewBag.Error</div>
+                }
+                <div class="field"><label for="login">Логин</label><input id="login" name="login" autocomplete="username" required autofocus /></div>
+                <div class="field"><label for="password">Пароль</label><input id="password" name="password" type="password" autocomplete="current-password" required /></div>
+                <button class="button" type="submit">Войти в систему</button>
+                <div class="demo-logins"><strong>Демонстрационные доступы</strong><br />admin / admin123 · teacher / teacher123 · student / student123</div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

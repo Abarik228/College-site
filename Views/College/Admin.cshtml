@@ -1,0 +1,10 @@
+@model CollegePortal.Models.AdminPageViewModel
+@{
+    ViewData["Title"] = "Администрирование";
+}
+<header class="page-heading"><div><p class="eyebrow">Управление порталом</p><h1>Администрирование</h1><p class="subtitle">Настройки колледжа и сводные данные</p></div><span class="tag">Администратор</span></header>
+@if (TempData["Notice"] is not null){<div class="alert alert-success">@TempData["Notice"]</div>}
+@if (TempData["Error"] is not null){<div class="alert alert-error">@TempData["Error"]</div>}
+<div class="stats-grid"><div class="stat"><span class="stat-label">Студенты</span><strong class="stat-value">@Model.StudentsCount</strong></div><div class="stat"><span class="stat-label">Преподаватели</span><strong class="stat-value">@Model.TeachersCount</strong></div><div class="stat"><span class="stat-label">Группы</span><strong class="stat-value">@Model.GroupsCount</strong></div><div class="stat"><span class="stat-label">Учётные записи</span><strong class="stat-value">@Model.AccountsCount</strong></div></div>
+<section class="panel"><div class="panel-heading"><h2>Настройки колледжа</h2></div><form asp-action="UpdateSettings" method="post" class="form-grid"><div class="field" style="grid-column:span 2"><label for="collegeName">Название учреждения</label><input id="collegeName" name="collegeName" value="@Model.CollegeName" required /></div><div class="field"><label for="academicYear">Начало учебного года</label><input id="academicYear" name="academicYear" type="number" min="2000" max="2100" value="@Model.AcademicYear" required /></div><div class="form-actions"><button class="button" type="submit">Сохранить</button></div></form></section>
+<section class="panel"><div class="panel-heading"><h2>Отчёты</h2></div><div class="quick-links"><a class="quick-link" asp-action="Report" asp-route-type="students">Отчёт по студентам ↗</a><a class="quick-link" asp-action="Report" asp-route-type="teachers">Отчёт по преподавателям ↗</a><a class="quick-link" asp-action="Report" asp-route-type="attendance">Отчёт по посещаемости ↗</a></div></section>

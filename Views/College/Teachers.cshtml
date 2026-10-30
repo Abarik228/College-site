@@ -1,0 +1,11 @@
+@model IReadOnlyList<CollegePortal.Domain.Teacher>
+@{
+    ViewData["Title"] = "Преподаватели";
+}
+<header class="page-heading"><div><p class="eyebrow">Педагогический состав</p><h1>Преподаватели</h1><p class="subtitle">Предметы и педагогический стаж</p></div><span class="tag">@Model.Count преподавателей</span></header>
+<section class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Преподаватель</th><th>Возраст</th><th>Предмет</th><th>Стаж</th></tr></thead><tbody>
+@foreach (var teacher in Model.OrderBy(t => t.Surname))
+{
+    <tr><td><strong>@teacher.Surname @teacher.Name</strong></td><td>@teacher.Age</td><td>@teacher.Subject</td><td>@teacher.Experience лет</td></tr>
+}
+</tbody></table></div></section>
